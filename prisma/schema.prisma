@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model characteristic_reviews {
+  id                BigInt           @id
+  characteristic_id BigInt?
+  review_id         BigInt?
+  value             Int?
+  characteristics   characteristics? @relation(fields: [characteristic_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reviews           reviews?         @relation(fields: [review_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model characteristics {
+  id                     BigInt                   @id
+  product_id             BigInt?
+  name                   String?                  @db.VarChar
+  characteristic_reviews characteristic_reviews[]
+}
+
+model reviews {
+  id                     BigInt                   @id
+  product_id             BigInt?
+  rating                 Int?
+  date                   BigInt?
+  summary                String?                  @db.VarChar
+  body                   String?                  @db.VarChar
+  recommend              String?                  @db.VarChar(5)
+  reported               String?                  @db.VarChar(5)
+  reviewer_name          String?                  @db.VarChar
+  reviewer_email         String?                  @db.VarChar
+  response               String?                  @db.VarChar
+  helpfulness            BigInt?
+  characteristic_reviews characteristic_reviews[]
+  reviews_photos         reviews_photos[]
+}
+
+model reviews_photos {
+  id        BigInt   @id
+  review_id BigInt?
+  url       String?  @db.VarChar
+  reviews   reviews? @relation(fields: [review_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
